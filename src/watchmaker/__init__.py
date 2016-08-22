@@ -40,21 +40,43 @@ class PrepArguments(object):
 class Prepare(object):
     """
     Prepare a system for setup and installation.
+
+    Attributes:
+        noreboot (bool):
+            Instances are rebooted after installation.  If this value is
+            set to True then the instance will not be rebooted.
+        s3 (bool):
+            Should an s3 bucket be used for the installation files.
+        system (str):
+            System platform.
+        config_path (str):
+            Path to YAML configuration file.
+        default_config (str):
+            Path to package default YAML configuration file.
+        log_path (str):
+            Path to logfile for stream self.logger.
+        saltstates (str):
+            Define the salt states to use. Must be 'None', 'Highstate', or
+            'comma-seperated-string'.
+        config (dict):
+            Configuration information for provisioning.
+        system_params (dict):
+            System params for setting up the environment to provision.
+        system_drive (str):
+            The root path for the system platform. (i.e. '/' or 'c:\')
+        execution_scripts (list):
+            List of scripts to execute during provisioning. These are
+            defined by the configuration file.
+        logger (object):
+            Logger for logging.
+
     """
     def __init__(self, arguments):
         """
         Args:
-            noreboot (bool):
-                Instances are rebooted after installation.  If this value is
-                set to True then the instance will not be rebooted.
-            s3 (bool):
-                Should an s3 bucket be used for the installation files.
-            config_path (str):
-                Path to YAML configuration file.
-            logger (bool):
-                Enables self.logger to a file.
-            log_path (str):
-                Path to logfile for stream self.logger.
+            arguments (object):
+                This has necessary attributes for Prepare.
+
         """
         self.kwargs = {}
         self.noreboot = arguments.noreboot
@@ -88,7 +110,14 @@ class Prepare(object):
         self.logger.info('System Type: {0}'.format(self.system))
 
     def _validate_url(self, url):
+        """
+        Args:
+            url (str):
+                any string to be evaluated as a properly formed url
 
+        Returns:
+            bool: True if it is a valid url, False otherwise.
+        """
         return urllib.parse.urlparse(url).scheme in ['http', 'https']
 
     def _get_config_data(self):
