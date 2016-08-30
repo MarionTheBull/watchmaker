@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument('--log-path', dest='log_path', default=None,
                         help='Path to the logfile for stream logging.')
     parser.add_argument('--saltstates', dest='saltstates', default=None,
-                        help='Define the saltstates to use.  Must be None, Highstate, or comma-seperated-string')
+                        help='Define the saltstates to use.  Must be None, Highstate, or comma-separated-string')
 
     if parser.parse_args().saltstates:
         if parser.parse_args().saltstates.lower() not in ['None'.lower(),
@@ -28,6 +28,27 @@ if __name__ == "__main__":
     systemprep.install_system()
 
 
+def append_file(build, file_paths):
+    # The version line must have the form
+    # __version__ = 'ver'
+    pattern = r"^(__version__ = ['\"])([^'\"]*)(['\"])"
+    repl = r"\g<1>\g<2>.dev{0}\g<3>".format(build)
+    version_file = os.path.join(PROJECT_ROOT, *file_paths)
+    print(
+        'Updating version in version_file "{0}" with build "{1}"'
+        .format(version_file, build)
+    )
+    replace(version_file, pattern, repl, flags=re.M)
 
+def main(args):
+    skip = args.skip
+    build = args.build
+    file_paths = args.file_paths
 
-
+    if skip:
+        print(
+            'Not updating version for this build, `skip` set to "{0}"'
+            .format(skip)
+        )
+    else:
+        append_file(build, file_paths)

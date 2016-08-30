@@ -26,11 +26,17 @@ class ManagerBase(object):
     @staticmethod
     def _get_s3_file(url, bucket_name, key_name, destination):
         """
-        :param url:
-        :param bucket_name:
-        :param key_name:
-        :param destination:
-        :return:
+        Uses the s3 api to get a file from an s3 bucket.
+
+        Args:
+            url (str):
+                The url of the file to grab.
+            bucket_name (str):
+                The s3 bucket name to use.
+            key_name (str):
+                Key is the identifier for the data that is being requested.
+            destination (str):
+                Location to store the data being requested.
         """
 
         try:
@@ -73,10 +79,17 @@ class ManagerBase(object):
     @abc.abstractmethod
     def download_file(self, url, filename, sourceiss3bucket):
         """
-        :param url:
-        :param filename:
-        :param sourceiss3bucket:
-        :return:
+
+
+        Args:
+            url (str):
+                The url of the file to grab.
+            bucket_name (str):
+                The s3 bucket name to use.
+            filename (str):
+
+            sourceiss3bucket (str):
+
         """
         logging.debug('Downloading: {0}'.format(url))
         logging.debug('Destination: {0}'.format(filename))
@@ -172,9 +185,11 @@ class ManagerBase(object):
     @abc.abstractmethod
     def create_working_dir(self, basedir, prefix):
         """
+        Args:
+            basedir (str):
 
-        :param basedir:
-        :param prefix:
+            prefix (str):
+
         :return:
         """
         logging.info('Creating a working directory.')
@@ -191,6 +206,13 @@ class ManagerBase(object):
 
     @abc.abstractmethod
     def call_process(self, cmd):
+        """
+
+        Args:
+            cmd (str):
+
+        :return:
+        """
         if not isinstance(cmd, list):
             exceptionhandler('Command is not a list.\n{0}'.format(str(cmd)))
         rsp = subprocess.call(cmd)
@@ -223,9 +245,13 @@ class ManagerBase(object):
     def extract_contents(self, filepath, to_directory, create_dir):
         """
 
-        :param filepath:
-        :param to_directory:
-        :param create_dir:
+        Args:
+            filepath (str):
+
+            to_directory (str):
+
+            create_dir (str):
+
         :return:
         """
         opener = None
@@ -287,7 +313,9 @@ class LinuxManager(ManagerBase):
     def _install_from_yum(self, packages):
         """
 
-        :param packages:
+        Args:
+            packages (str):
+
         :return:
         """
 
@@ -306,9 +334,13 @@ class LinuxManager(ManagerBase):
     def download_file(self, url, filename, sourceiss3bucket=False):
         """
 
-        :param url:
-        :param filename:
-        :param sourceiss3bucket:
+        Args:
+            url (str):
+
+            filename (str):
+
+            sourceiss3bucket (str):
+
         :return:
         """
         super(LinuxManager, self).download_file(
@@ -343,9 +375,15 @@ class LinuxManager(ManagerBase):
         """
         Extracts a compressed file to the specified directory.
         Supports files that end in .zip, .tar.gz, .tgz, tar.bz2, or tbz.
-        :param create_dir:
-        :param filepath: str, path to the compressed file
-        :param to_directory: str, path to the target directory
+
+        Args:
+            create_dir (str):
+
+            filepath (str):
+                path to the compressed file
+            to_directory (str):
+                path to the target directory
+
         :raise ValueError: error raised if file extension is not supported
         """
         super(LinuxManager, self).extract_contents(
@@ -367,9 +405,13 @@ class WindowsManager(ManagerBase):
     def download_file(self, url, filename, sourceiss3bucket=False):
         """
 
-        :param url:
-        :param filename:
-        :param sourceiss3bucket:
+        Args:
+            url (str):
+
+            filename (str):
+
+            sourceiss3bucket (str):
+
         :return:
         """
         super(WindowsManager, self).download_file(
@@ -404,9 +446,15 @@ class WindowsManager(ManagerBase):
         """
         Extracts a compressed file to the specified directory.
         Supports files that end in .zip, .tar.gz, .tgz, tar.bz2, or tbz.
-        :param create_dir:
-        :param filepath: str, path to the compressed file
-        :param to_directory: str, path to the target directory
+
+        Args:
+            create_dir (str):
+
+            filepath (str):
+                str, path to the compressed file
+            to_directory (str):
+                path to the target directory
+
         :raise ValueError: error raised if file extension is not supported
         """
         super(WindowsManager, self).extract_contents(
